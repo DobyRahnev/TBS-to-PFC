@@ -1,4 +1,5 @@
-# TBS-to-PFC
+# Causal evidence for frontal cortex organization related to perceptual decision-making
+
 Data and code for paper titled "Causal evidence for frontal cortex organization related to perceptual decision-making", currently in submission.
 
 Most of the analyses are written in MATLAB. Here is a guideline to the files:

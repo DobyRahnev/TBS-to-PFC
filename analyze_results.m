@@ -6,7 +6,7 @@
 %
 % The file runs all TMS analyses reported in the paper.
 %
-% Writted by: Doby Rahnev
+% Written by: Doby Rahnev
 % Last edit: June 2, 2015
 %--------------------------------------------------------------------------
 

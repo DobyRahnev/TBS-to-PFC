@@ -7,7 +7,7 @@
 % The file runs all TMS analyses reported in the paper.
 %
 % Written by: Doby Rahnev
-% Last edit: June 2, 2015
+% Last edit: Nov 11, 2015
 %--------------------------------------------------------------------------
 
 clear
@@ -36,6 +36,17 @@ for subject=subjects
         rt(sub_num,sess) = mean(data{sub_num}.rt(data{sub_num}.session==sess));
         acc(sub_num,sess) = mean(data{sub_num}.correct(data{sub_num}.session==sess));
         conf(sub_num,sess) = mean(data{sub_num}.confidence(data{sub_num}.session==sess));
+        
+        for spat_cue=0:1
+            for SAT=1:2
+                rt_all(sub_num,sess,spat_cue+1,SAT) = mean(data{sub_num}.rt(data{sub_num}.cue_validity==spat_cue & ...
+                    data{sub_num}.session==sess & data{sub_num}.speed_accuracy==SAT));
+                acc_all(sub_num,sess,spat_cue+1,SAT) = mean(data{sub_num}.correct(data{sub_num}.cue_validity==spat_cue & ...
+                    data{sub_num}.session==sess & data{sub_num}.speed_accuracy==SAT));
+                conf_all(sub_num,sess,spat_cue+1,SAT) = mean(data{sub_num}.confidence(data{sub_num}.cue_validity==spat_cue & ...
+                    data{sub_num}.session==sess & data{sub_num}.speed_accuracy==SAT));
+            end
+        end
         
         % Attention analyses
         for spat_cue=0:1 %0: invalid, 1: valid
@@ -98,7 +109,7 @@ P_acc       %all pairwise accuracy comparisons
 P_conf      %all pairwise confidence comparisons
 
 
-%% Weights for T tests
+%% Weights for tests
 load fmriDataAndAnalyses/Analyses/fmri_weights
 
 
@@ -110,12 +121,14 @@ diff_attention_effect = attention_effect(:,:,1) - attention_effect(:,:,2);
 % Test the validity effects after TMS to each region
 for i=1:4
     for j=1:4
-        [t_att(i,j), p_att(i,j)] = weighted_t_test(diff_attention_effect(:,i) - diff_attention_effect(:,j), fmri_attention_effect);
+        [t_att(i,j), p_att(i,j), d_att(i,j)] = weighted_t_test(diff_attention_effect(:,i) - diff_attention_effect(:,j), fmri_attention_effect);
     end
 end
 
 % Display means, as well as the t and p values for all pairwise comparisons
 mean(diff_attention_effect)
+rt_diff = mean(diff_attention_effect) - mean(diff_attention_effect(:,2))
+effectSizes = d_att(:,2)'
 t_att
 p_att
 
@@ -128,12 +141,14 @@ diff_SAT_effect = SAT_effect(:,:,2) - SAT_effect(:,:,1);
 % Test the validity effects after TMS to each region
 for i=1:4
     for j=1:4
-        [t_sat(i,j), p_sat(i,j)] = weighted_t_test(diff_SAT_effect(:,i) - diff_SAT_effect(:,j), fmri_SAT_effect);
+        [t_sat(i,j), p_sat(i,j), d_sat(i,j)] = weighted_t_test(diff_SAT_effect(:,i) - diff_SAT_effect(:,j), fmri_SAT_effect);
     end
 end
 
 % Display means, as well as the t and p values for all pairwise comparisons
 mean(diff_SAT_effect)
+rt_diff = mean(diff_SAT_effect) - mean(diff_SAT_effect(:,3))
+effectSizes = d_sat(:,3)'
 t_sat
 p_sat
 
@@ -144,7 +159,7 @@ p_sat
 mean_type2AUC = mean(type2AUC); %aPFC is highest (significant, see below)
 for i=1:4
     for j=1:4
-        [t_type2AUC(i,j), p_type2AUC(i,j)] = weighted_t_test(type2AUC(:,i) - type2AUC(:,j), fmri_type2AUC);
+        [t_type2AUC(i,j), p_type2AUC(i,j), d_type2AUC(i,j)] = weighted_t_test(type2AUC(:,i) - type2AUC(:,j), fmri_type2AUC);
     end
 end
 
@@ -155,7 +170,7 @@ end
 mean_metaDprime = mean(metaDprime);
 for i=1:4
     for j=1:4
-        [t_metaDprime(i,j), p_metaDprime(i,j)] = weighted_t_test(metaDprime(:,i) - metaDprime(:,j), fmri_metaDprime);
+        [t_metaDprime(i,j), p_metaDprime(i,j), d_metaDprime(i,j)] = weighted_t_test(metaDprime(:,i) - metaDprime(:,j), fmri_metaDprime);
     end
 end
 
@@ -163,7 +178,7 @@ end
 mean_phi = mean(phi);   %aPFC is highest (significant, see below)
 for i=1:4
     for j=1:4
-        [t_phi(i,j), p_phi(i,j)] = weighted_t_test(phi(:,i) - phi(:,j), fmri_phi);
+        [t_phi(i,j), p_phi(i,j), d_phi(i,j)] = weighted_t_test(phi(:,i) - phi(:,j), fmri_phi);
     end
 end
 
@@ -172,7 +187,7 @@ conf_diff = conf_forCorrect - conf_forError;
 mean_conf_diff = mean(conf_diff);
 for i=1:4
     for j=1:4
-        [t_conf_diff(i,j), p_conf_diff(i,j)] = weighted_t_test(conf_diff(:,i) - conf_diff(:,j), fmri_conf_diff);
+        [t_conf_diff(i,j), p_conf_diff(i,j), d_conf_diff(i,j)] = weighted_t_test(conf_diff(:,i) - conf_diff(:,j), fmri_conf_diff);
     end
 end
 
@@ -186,23 +201,33 @@ p_metaDprime
 p_phi
 p_conf_diff
 
+% Dispaly statistics reported in paper for Type 2 AUC
+mean(type2AUC)
+AUC_diff = mean(type2AUC(:,4)) - mean(type2AUC)
+effectSizes = d_type2AUC(4,:)
+
 
 %% Metacognitive scores for posterior and anterior DLPFC
 load Data/coordinates
-[r p] = corr(type2AUC(:,3), dlpfc_sites(:,2))
 median_yCoord_dlpfc = median(dlpfc_sites(:,2))
 mean_yCoord_dlpfc = mean(dlpfc_sites(:,2))
 mean_type2AUC_posteriorHalf = mean(type2AUC(dlpfc_sites(:,2)<35,3))
 mean_type2AUC_anteriorHalf = mean(type2AUC(dlpfc_sites(:,2)>35,3))
+[H P ci stats] = ttest2(type2AUC(dlpfc_sites(:,2)>35,3), type2AUC(dlpfc_sites(:,2)<35,3));
 
 
-%% Plot means in a bar graph (Figure 2)
+%% Plot means in a bar graph
 data = {1000*diff_attention_effect, 1000*diff_SAT_effect, type2AUC};
 t_values = {t_att(:,2), t_sat(:,3), t_type2AUC(:,4)};
 reference = [2, 3, 4];
 ylabel_string = {'RT_{invalid} - RT_{valid} (ms)', 'RT_{accuracy} - RT_{speed} (ms)', 'Metacognitive score'};
 ylimit = {[0 250], [0 400], [.64 .76]};
 plot_4bars_withinError_3subplots(data, t_values, reference, ylabel_string, ylimit)
+
+
+%% Create supplementary tables
+create_supp_table1(1000*rt_all, acc_all, conf_all, 'Supp_Table1')
+create_supp_table2(type2AUC, metaDprime, phi, conf_diff, 'Supp_Table2')
 
 
 %% Export data for mixed-effects models in R

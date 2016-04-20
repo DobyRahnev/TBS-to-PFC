@@ -1,4 +1,4 @@
-function [t_value, p_value, df, weightedSD] = weighted_t_test(x, w)
+function [t_value, p_value, effectSize, df, weightedSD] = weighted_t_test(x, w)
 
 %-------------------------------------------------------------------------
 % The functions computes weighted t test. For a similar function in R, see
@@ -14,4 +14,4 @@ weightedSE = sqrt(weightedVar / length(x));
 t_value = weightedMean / weightedSE;
 p_value = 2*tcdf(-abs(t_value), df);
 weightedSD = sqrt(weightedVar);
-
+effectSize = weightedMean / weightedSD;

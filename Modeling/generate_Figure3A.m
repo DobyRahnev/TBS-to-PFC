@@ -1,4 +1,4 @@
-%generate_Figure4A
+%generate_Figure3A
 
 clear
 
@@ -15,7 +15,6 @@ for i=1:2
         process{i,j} = 0;
     end
 end
-
 
 % Accumulate evidence until one of the accumulators reaches the bound
 while process{1,1}(time) < 100
@@ -35,6 +34,7 @@ while process{1,1}(time) < 100
     end
 end
 
+% Plot the figure
 figure
 plot(1:time, process{1,1}, 'r', 'LineWidth', 3)
 hold

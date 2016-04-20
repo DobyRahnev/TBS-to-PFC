@@ -16,6 +16,7 @@ for subject=subjects
     
     % Overall performance
     rt(sub_num) = mean(data{sub_num}.rt);
+    rt2(sub_num) = mean(data{sub_num}.rt2);
     acc(sub_num) = mean(data{sub_num}.correct);
     conf(sub_num) = mean(data{sub_num}.confidence);    
     

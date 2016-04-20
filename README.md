@@ -1,14 +1,14 @@
-# Causal evidence for frontal cortex organization related to perceptual decision-making
+# Causal evidence for frontal cortex organization for perceptual decision making
 
-Data and code for paper titled "Causal evidence for frontal cortex organization related to perceptual decision-making", currently in submission.
+Data and code for paper titled "Causal evidence for frontal cortex organization for perceptual decision making", accepted for publication at PNAS.
 
 Most of the analyses are written in MATLAB. Here is a guideline to the files:
 
 MAIN TMS ANALYSES
 - these are in analyze_results.m
-- the file above loads the behavioral data (.mat files) located in the folder "Data"
+- the file above loads the behavioral data (.mat files) located in the folder "Data". "Data" also contains information on the FEF, DLPFC, and aPFC coordinates of each subject.
 - helper functions are located in the folder "helperFunctions"
-- weights that come from the fMRI behavioral data (day 2 of the experiment) are computed in the folder "fmriDataAndAnalyses"
+- weights that come from the fMRI behavioral data (day 2 of the experiment) are computed in the folder "fmriDataAndAnalyses". This folder also contains the behavioral results from the fMRI day, as well as analyses files for the basic behavioral effects.
 
 MIXED-EFFECTS MODELS
 - these are done in R
@@ -19,7 +19,7 @@ fMRI ROI ANALYSES
 - these are included in the folder "fMRI_ROI_analyses"
 
 MODELING
-- main file is run_simulation.m in the folder "Modeling"
+- main file is run_simulation.m in the folder "Modeling". The main analyses in the paper are based on "betaValues_3GLMs" file. The supplementary reports the results from the "betaValues_singleGLM" file.
 
 
 If you have any questions, write to Doby Rahnev at drahnev@gmail.com
